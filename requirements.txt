@@ -1,0 +1,4 @@
+cryptography
+cffi
+pycparser
+pyjwt[crypto]

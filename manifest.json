@@ -1,0 +1,11 @@
+{
+  "file_list": [
+    "main.py"
+  ],
+  "custom_middleware": {
+    "driver": "python",
+    "auth_check": {
+      "name": "AuthCheck"
+    }
+  }
+}
