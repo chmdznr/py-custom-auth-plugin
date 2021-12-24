@@ -1,7 +1,7 @@
 import os
 import sys
 from tyk.decorators import *
-from gateway import TykGateway as Tyk
+from gateway import TykGateway as tyk
 import traceback
 
 # from time import time
@@ -29,20 +29,21 @@ def logic_test(public_key, token):
 
 @Hook
 def AuthCheck(request, session, metadata, spec):
-    Tyk.log("AuthCheck is called", "info")
+    tyk.log("AuthCheck is called", "info")
     public_key = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAltnb4lSe2Y9ia8vfep3pW7mgXb1U8oIs9pVJTiZp0P5xNaPjLAwo2yDpNY4pb4HLndfKBvDvh2e7CYa/BttN+mrd/CKuu8YRi1JeMdt2VMEP45o5xQ5aoP0TWVaQMJIIt+rXgLi/6DPS6HWmooHcj/X36FPpDJSDcvisp3Pr7fCpWoK295lsgVQUFMfDh+HRGPTkWCAC1Qu34SaoIAVDlLfrhCMC6yU48dORt2+8mZZcuRpJyjnJs/epuRpH0MlsNAefWccdSbA37PtPitXbWzGNjvo2W/LNkvz1zorOvoIHNZh1O2OKBdh+v5dhXFlkfMPU4yYoyr4BMGGwzQKgtwIDAQAB\n-----END PUBLIC KEY-----"
 
     # request.get_header is a helper method, to get the full header list, use request.object.headers
     auth_header = request.get_header('Authorization')
     auth_token = auth_header.split(" ", 1)[-1].strip()
-    Tyk.log(auth_token, "info")
+    tyk.log(auth_token, "info")
     jwt_headers = jwt.get_unverified_header(auth_token)
+    tyk.log(jwt_headers, "info")
     try:
         decoded = jwt.decode(auth_token, public_key, audience="account", algorithms=[jwt_headers['alg']],
                              options={"verify_signature": True})
-        Tyk.log("AuthCheck is successful", "info")
+        tyk.log("AuthCheck is successful", "info")
         # print(decoded)
-        Tyk.log(decoded, "info")
+        tyk.log(decoded, "info")
         # print(type(decoded))
         # print(decoded['name'])
         metadata["token"] = auth_header
@@ -51,10 +52,10 @@ def AuthCheck(request, session, metadata, spec):
         metadata["azp"] = decoded["azp"]
         return request, session, metadata
     except Exception as e:
-        Tyk.log("AuthCheck is failed", "error")
-        print(traceback.format_exc())
+        tyk.log("AuthCheck is failed", "error")
+        tyk.log(traceback.format_exc(), "error")
         # Set a custom error:
-        request.object.return_overrides.response_error = e
+        request.object.return_overrides.response_error = repr(e)
         request.object.return_overrides.response_code = 403
         return request, session, metadata
 
