@@ -35,7 +35,7 @@ def AuthCheck(request, session, metadata, spec):
     # request.get_header is a helper method, to get the full header list, use request.object.headers
     auth_header = request.get_header('Authorization')
     auth_token = auth_header.split(" ", 1)[-1].strip()
-    tyk.log(type(auth_token))
+    tyk.log(type(auth_token), "info")
     tyk.log(auth_token, "info")
     try:
         jwt_headers = jwt.get_unverified_header(auth_token)
