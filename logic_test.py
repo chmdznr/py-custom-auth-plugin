@@ -5,6 +5,7 @@ import jwt
 
 def logic_test(public_key, token):
     jwt_headers = jwt.get_unverified_header(token)
+    public_key = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAltnb4lSe2Y9ia8vfep3pW7mgXb1U8oIs9pVJTiZp0P5xNaPjLAwo2yDpNY4pb4HLndfKBvDvh2e7CYa/BttN+mrd/CKuu8YRi1JeMdt2VMEP45o5xQ5aoP0TWVaQMJIIt+rXgLi/6DPS6HWmooHcj/X36FPpDJSDcvisp3Pr7fCpWoK295lsgVQUFMfDh+HRGPTkWCAC1Qu34SaoIAVDlLfrhCMC6yU48dORt2+8mZZcuRpJyjnJs/epuRpH0MlsNAefWccdSbA37PtPitXbWzGNjvo2W/LNkvz1zorOvoIHNZh1O2OKBdh+v5dhXFlkfMPU4yYoyr4BMGGwzQKgtwIDAQAB\n-----END PUBLIC KEY-----"
     try:
         decoded = jwt.decode(token, public_key, audience="account", algorithms=[jwt_headers['alg']],
                              options={"verify_signature": True})
