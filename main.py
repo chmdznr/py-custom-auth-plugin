@@ -35,10 +35,22 @@ def AuthCheck(request, session, metadata, spec):
     # request.get_header is a helper method, to get the full header list, use request.object.headers
     auth_header = request.get_header('Authorization')
     auth_token = auth_header.split(" ", 1)[-1].strip()
+    tyk.log(type(auth_token))
     tyk.log(auth_token, "info")
-    jwt_headers = jwt.get_unverified_header(auth_token)
+    try:
+        jwt_headers = jwt.get_unverified_header(auth_token)
+    except Exception as e:
+        tyk.log("AuthCheck is failed #1", "error")
+        tyk.log(traceback.format_exc(), "error")
+        # Set a custom error:
+        request.object.return_overrides.response_error = repr(e)
+        request.object.return_overrides.response_code = 403
+        return request, session, metadata
+
+    tyk.log("hasil jwt headers", "info")
     tyk.log(jwt_headers, "info")
     try:
+        tyk.log("Masuk mulai decode", "info")
         decoded = jwt.decode(auth_token, public_key, audience="account", algorithms=[jwt_headers['alg']],
                              options={"verify_signature": True})
         tyk.log("AuthCheck is successful", "info")
@@ -52,7 +64,7 @@ def AuthCheck(request, session, metadata, spec):
         metadata["azp"] = decoded["azp"]
         return request, session, metadata
     except Exception as e:
-        tyk.log("AuthCheck is failed", "error")
+        tyk.log("AuthCheck is failed #2", "error")
         tyk.log(traceback.format_exc(), "error")
         # Set a custom error:
         request.object.return_overrides.response_error = repr(e)
