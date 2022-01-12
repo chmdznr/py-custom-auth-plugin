@@ -12,3 +12,16 @@ Custom auth middleware for Tyk using Python
 
 # add `vendor` plugin to bundle.zip:
 `zip -r bundle.zip vendor/`
+
+## One stop solution when updates
+```
+docker run --rm \
+    --platform=linux/amd64 \
+    -w "/tmp" \
+    -v (pwd):/tmp --entrypoint "/bin/sh" \
+    -it tykio/tyk-gateway:v3.2.2 \
+    -c '/opt/tyk-gateway/tyk bundle build -y' &&
+    zip -r bundle.zip vendor &&
+    mv bundle.zip bundle1.zip &&
+    python3 -m http.server
+```

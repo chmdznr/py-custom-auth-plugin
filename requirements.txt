@@ -2,3 +2,4 @@ cryptography
 cffi
 pycparser
 pyjwt[crypto]
+bcrypt

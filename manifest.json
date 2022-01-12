@@ -5,7 +5,7 @@
   "custom_middleware": {
     "driver": "python",
     "auth_check": {
-      "name": "AuthCheck1",
+      "name": "auth_check_2022011301",
       "path": "main.py"
     }
   }
