@@ -51,11 +51,15 @@ def auth_check_2022011303(request, session, metadata, spec):
         if "azp" in unverified_token:
             oidc_jwt_azp = unverified_token["azp"]
 
+        tyk.log(oidc_jwt_azp, "info")
+
         # get public key for this Oidc client
         pk = ""
         for ac in spec_obj["allowed_clients"]:
+            tyk.log(ac["name"], "info")
             if ac["name"] == oidc_jwt_azp:
-                pk = ac["public_key"]
+                pk = "-----BEGIN PUBLIC KEY-----\n{}\n-----END PUBLIC KEY-----".format(ac["public_key"])
+        tyk.log(pk)
         public_key = bytes(pk, 'utf-8')
     except Exception as e:
         tyk.log("AuthCheck is failed #1", "error")
