@@ -24,21 +24,25 @@ def auth_check_2022011301(request, session, metadata, spec):
     spec_obj = json.loads(spec["config_data"])
     # endpoint = spec_obj["endpoint"]
     # tyk.log(endpoint, "info")
+    tyk.log(spec_obj, "info")
 
     # tyk.log(request, "info")
     # public_key = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAltnb4lSe2Y9ia8vfep3pW7mgXb1U8oIs9pVJTiZp0P5xNaPjLAwo2yDpNY4pb4HLndfKBvDvh2e7CYa/BttN+mrd/CKuu8YRi1JeMdt2VMEP45o5xQ5aoP0TWVaQMJIIt+rXgLi/6DPS6HWmooHcj/X36FPpDJSDcvisp3Pr7fCpWoK295lsgVQUFMfDh+HRGPTkWCAC1Qu34SaoIAVDlLfrhCMC6yU48dORt2+8mZZcuRpJyjnJs/epuRpH0MlsNAefWccdSbA37PtPitXbWzGNjvo2W/LNkvz1zorOvoIHNZh1O2OKBdh+v5dhXFlkfMPU4yYoyr4BMGGwzQKgtwIDAQAB\n-----END PUBLIC KEY-----"
     # tyk.log(type(public_key), "info")
     public_key = ""  # empty just for init
-    tyk.log(public_key, "info")
+    # tyk.log(public_key, "info")
 
     # request.get_header is a helper method, to get the full header list, use request.object.headers
     auth_header = request.get_header("Authorization")
-    tyk.log(auth_header, "info")
+    # tyk.log(auth_header, "info")
     auth_token = auth_header.split(" ", 1)[-1].strip()
     # tyk.log(type(auth_token), "info")
     tyk.log(auth_token, "info")
     try:
         jwt_headers = jwt.get_unverified_header(auth_token)
+        tyk.log("hasil jwt headers", "info")
+        tyk.log(jwt_headers, "info")
+
         unverified_token = jwt.decode(auth_token, options={"verify_signature": False})
         # tyk.log("hasil unverified token", "info")
         # tyk.log(unverified_token, "info")
@@ -48,10 +52,11 @@ def auth_check_2022011301(request, session, metadata, spec):
             oidc_jwt_azp = unverified_token["azp"]
 
         # get public key for this Oidc client
+        pk = ""
         for ac in spec_obj["allowed_clients"]:
             if ac["name"] == oidc_jwt_azp:
-                public_key = ac["public_key"]
-
+                pk = ac["public_key"]
+        public_key = bytes(pk, 'utf-8')
     except Exception as e:
         tyk.log("AuthCheck is failed #1", "error")
         tyk.log(traceback.format_exc(), "error")
@@ -60,8 +65,7 @@ def auth_check_2022011301(request, session, metadata, spec):
         request.object.return_overrides.response_code = 403
         return request, session, metadata
 
-    tyk.log("hasil jwt headers", "info")
-    tyk.log(jwt_headers, "info")
+
     try:
         tyk.log("Masuk mulai decode", "info")
         decoded = jwt.decode(auth_token, public_key, audience="account", algorithms=[jwt_headers['alg']],
