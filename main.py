@@ -17,7 +17,7 @@ import jwt
 
 
 @Hook
-def auth_check_2022011301(request, session, metadata, spec):
+def auth_check_2022011302(request, session, metadata, spec):
     tyk.log("AuthCheck is called", "info")
     tyk.log("hello world", "info")
     tyk.log(spec["config_data"], "info")
