@@ -17,14 +17,14 @@ import jwt
 
 
 @Hook
-def auth_check_2022011302(request, session, metadata, spec):
+def auth_check_2022011303(request, session, metadata, spec):
     tyk.log("AuthCheck is called", "info")
     tyk.log("hello world", "info")
     tyk.log(spec["config_data"], "info")
     spec_obj = json.loads(spec["config_data"])
     # endpoint = spec_obj["endpoint"]
     # tyk.log(endpoint, "info")
-    tyk.log(spec_obj, "info")
+    # tyk.log(spec_obj, "info")
 
     # tyk.log(request, "info")
     # public_key = "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAltnb4lSe2Y9ia8vfep3pW7mgXb1U8oIs9pVJTiZp0P5xNaPjLAwo2yDpNY4pb4HLndfKBvDvh2e7CYa/BttN+mrd/CKuu8YRi1JeMdt2VMEP45o5xQ5aoP0TWVaQMJIIt+rXgLi/6DPS6HWmooHcj/X36FPpDJSDcvisp3Pr7fCpWoK295lsgVQUFMfDh+HRGPTkWCAC1Qu34SaoIAVDlLfrhCMC6yU48dORt2+8mZZcuRpJyjnJs/epuRpH0MlsNAefWccdSbA37PtPitXbWzGNjvo2W/LNkvz1zorOvoIHNZh1O2OKBdh+v5dhXFlkfMPU4yYoyr4BMGGwzQKgtwIDAQAB\n-----END PUBLIC KEY-----"
@@ -40,8 +40,8 @@ def auth_check_2022011302(request, session, metadata, spec):
     tyk.log(auth_token, "info")
     try:
         jwt_headers = jwt.get_unverified_header(auth_token)
-        tyk.log("hasil jwt headers", "info")
-        tyk.log(jwt_headers, "info")
+        # tyk.log("hasil jwt headers", "info")
+        # tyk.log(jwt_headers, "info")
 
         unverified_token = jwt.decode(auth_token, options={"verify_signature": False})
         # tyk.log("hasil unverified token", "info")
@@ -72,7 +72,7 @@ def auth_check_2022011302(request, session, metadata, spec):
                              options={"verify_signature": True})
         tyk.log("AuthCheck is successful", "info")
         # print(decoded)
-        tyk.log(decoded, "info")
+        # tyk.log(decoded, "info")
         # print(type(decoded))
         # print(decoded['name'])
         metadata["token"] = auth_header
