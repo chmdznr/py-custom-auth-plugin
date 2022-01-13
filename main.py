@@ -40,8 +40,9 @@ def auth_check_2022011301(request, session, metadata, spec):
     try:
         jwt_headers = jwt.get_unverified_header(auth_token)
         unverified_token = jwt.decode(auth_token, options={"verify_signature": False})
-        tyk.log("hasil unverified token", "info")
-        tyk.log(unverified_token, "info")
+        # tyk.log("hasil unverified token", "info")
+        # tyk.log(unverified_token, "info")
+        print(unverified_token)
         oidc_jwt_azp = ""
         if "azp" in unverified_token:
             oidc_jwt_azp = unverified_token["azp"]
