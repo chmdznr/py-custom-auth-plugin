@@ -17,7 +17,7 @@ import jwt
 
 
 @Hook
-def auth_check_2022012701(request, session, metadata, spec):
+def auth_check_2022012801(request, session, metadata, spec):
     tyk.log("AuthCheck is called", "info")
     tyk.log("hello world", "info")
     tyk.log(spec["config_data"], "info")
@@ -66,7 +66,8 @@ def auth_check_2022012701(request, session, metadata, spec):
         tyk.log(traceback.format_exc(), "error")
         # Set a custom error:
         # request.object.return_overrides.response_error = repr(e)
-        request.object.return_overrides.response_error = json.dumps(
+        request.object.return_overrides.override_error = True
+        request.object.return_overrides.response_body = json.dumps(
             {"error": "invalid_login", "error_description": "Invalid token"})
         request.object.return_overrides.response_code = 403
         return request, session, metadata
@@ -93,7 +94,8 @@ def auth_check_2022012701(request, session, metadata, spec):
         tyk.log(traceback.format_exc(), "error")
         # Set a custom error:
         # request.object.return_overrides.response_error = repr(e)
-        request.object.return_overrides.response_error = json.dumps(
+        request.object.return_overrides.override_error = True
+        request.object.return_overrides.response_body = json.dumps(
             {"error": "invalid_login", "error_description": "Invalid token"})
         request.object.return_overrides.response_code = 403
         return request, session, metadata
